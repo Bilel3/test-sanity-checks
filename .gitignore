@@ -1,0 +1,12 @@
+__pycache__/
+*.py[cod]
+.venv/
+build/
+dist/
+*.egg-info/
+.pytest_cache/
+.logagent.pid
+.logagent.log
+reports/
+.DS_Store
+test1.log

@@ -1,0 +1,74 @@
+# Copy and adjust environment names, branch lists, and thresholds for your estate.
+environments: [PROD, PREPROD, UAT, DEV]
+
+environment_filename_patterns:
+  PROD: ['(?i)(?:^|[._-])prod(?:[._-]|$)']
+  PREPROD: ['(?i)(?:^|[._-])preprod(?:[._-]|$)']
+  UAT: ['(?i)(?:^|[._-])uat(?:[._-]|$)']
+  DEV: ['(?i)(?:^|[._-])dev(?:[._-]|$)']
+
+# Environment title patterns are considered only if no filename pattern matches.
+environment_title_patterns: {}
+environment_file_map: {} # Exact basename-to-environment overrides, e.g. {"prod-check.log": PROD}
+
+# Populate per-environment branch lists when they differ. Empty lists disable
+# missing-branch checks for that environment until configured.
+expected_branches:
+  default: [BEZ, CHZ, DEFF, ESHK, GCBE, GCDH, GDE, GCES, GRAX, PLPX]
+  by_environment: {}
+
+# Every listed section is required in every input log file. DB sections are
+# dynamic; list only the DB checks expected in your installation.
+expected_sections:
+  - COB STATUS
+  - NPK COB
+  - FRA
+  - DB LIVE
+  - DB HISTO
+  - DB OUZELUM
+  - CFT
+  - MQ
+  - APPLICATION
+  - FS
+
+business_date:
+  expected: null # ISO date (YYYY-MM-DD); null disables date comparison.
+  log_formats: ['%d-%b-%y', '%Y-%m-%d', '%d/%m/%Y']
+
+success_tokens: [OK, SUCCESS, COMPLETED, COMPLETE, PASS, PASSED]
+failure_tokens: [KO, FAILED, FAILURE, ERROR, EXCEPTION, TIMEOUT]
+
+thresholds:
+  fra:
+    warning_percent: 80
+    critical_percent: 90
+    reclaimable_warning_gb: null # Optional: warn when reclaimable FRA meets this value.
+  filesystem:
+    warning_percent: 80
+    critical_percent: 90
+    mounts: {} # Example: {"/var": {warning_percent: 75, critical_percent: 85}}
+  cft:
+    max_age_minutes: 30
+  mq:
+    max_depth: 1000
+  database:
+    max_response_time_ms: 5000
+
+ai:
+  enabled: false
+  provider: openai_compatible
+  endpoint: https://api.openai.com/v1/chat/completions
+  model: gpt-4o-mini
+  api_key_env: LOGAGENT_API_KEY
+  timeout_seconds: 30
+
+mail:
+  enabled: false
+  host: localhost
+  port: 587
+  username_env: SMTP_USERNAME
+  password_env: SMTP_PASSWORD
+  from: logagent@example.invalid
+  to: []
+  starttls: true
+  attach_report: true
